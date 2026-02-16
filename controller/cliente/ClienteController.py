@@ -6,18 +6,28 @@ class ClienteController:
 
     @staticmethod
     def create_post():
-        with get_driver() as driver:
-            cliente = request.form.get('cliente')
-            costureira = request.form.get('costureira')
-            medida = request.form.get('medida')
-            roupa = request.form.get('roupa')
-            valor = request.form.get('valor')
+        try:
+            with get_driver() as driver:
 
-            if not cliente or not costureira or not medida or not roupa or not valor:
-                return jsonify({"error": "Campos vazios"}), 400
+                cliente = request.form.get('cliente')
+                costureira = request.form.get('costureira')
+                medida = request.form.get('medida')
+                roupa = request.form.get('roupa')
+                valor = request.form.get('valor')
 
-            Cliente_Repository.save(
-                driver, cliente, costureira, medida, roupa, valor
-            )
+                if not cliente or not costureira or not medida or not roupa or not valor:
+                    return jsonify({"error": "Campos vazios"}), 400
 
-            return jsonify({"message": "Cliente salvo com sucesso"}), 201
+                Cliente_Repository.save(
+                    driver,
+                    cliente,
+                    costureira,
+                    medida,
+                    roupa,
+                    valor
+                )
+
+                return jsonify({"message": "Cliente salvo com sucesso"}), 201
+
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
