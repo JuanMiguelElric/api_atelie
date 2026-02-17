@@ -11,7 +11,7 @@ class Cliente_Repository:
             MERGE (d:dia {data:$dia})
             MERGE (c:cliente {name:$cliente})
             MERGE (cs:costureira {name:$costureira})
-            MERGE (m:medidas {descricao:$medida})
+            MERGE (m:medidas {descricao:$medidas})
             MERGE (r:roupa {descricao:$roupa})
             MERGE (v:valor {valor:$valor})
             MERGE (p:pagamento {tipo:'PIX'})
@@ -24,11 +24,19 @@ class Cliente_Repository:
             MERGE (r)-[:TEM_VALOR]->(v)
             MERGE (v)-[:PAGO_COM]->(p)
             """,
-            dia=str(dia),
+            dia=dia.isoformat(),  # Corrigido para ISO 8601
             cliente=cliente,
             costureira=costureira,
-            medida=medidas,
+            medidas=medidas,
             roupa=roupa,
-            valor=float(valor),
-            database_="neo4j"
+            valor=float(valor)
         )
+    @staticmethod
+    def find_costureira (driver,nome_costureira):
+         driver.execute_query(
+            """
+            MATCH (cs:costureira {name: $nome_costureira})
+            RETURN cs
+            """,
+            costureira=nome_costureira
+            )
